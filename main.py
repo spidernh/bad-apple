@@ -26,6 +26,13 @@ start_time = time.time()
 while cap.isOpened():
     ret, frame = cap.read()
 
+    # Check if we should stop, and stop
+    if ret == True:
+        if keyboard.is_pressed('q'):
+            break
+    else:
+        break
+
     # Convert the big frame into a grid of pixels that can fit on the terminal 
     terminal_grid = []
     for y in range(len(frame)):
@@ -33,8 +40,7 @@ while cap.isOpened():
             row = []
             for x in range(len(frame[y])):
                 if floor(x % frequency[0]) == 0:
-                    frame[y][x] = [255, 255, 255] if frame[y][x][0] >= 128 else [0, 0, 0]
-                    row.append(frame[y][x][0] == 255)
+                    row.append(frame[y][x][0] >= 128)
             terminal_grid.append(row)
 
     # Draw in terminal
@@ -47,13 +53,8 @@ while cap.isOpened():
         to_print += new_line_escape
     to_print += new_frame_escape
     print(to_print)
-
-    if ret == True:
-        if keyboard.is_pressed('q'):
-            break
-    else:
-        break
-
+    
+    # Wait until the next frame should be displayed - we don't want to be running a 30 fps at 70 fps now do we?
     frame_counter += 1
     while time.time() - start_time < frame_counter * (1 / fps):
         pass
