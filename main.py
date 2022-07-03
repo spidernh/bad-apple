@@ -16,7 +16,7 @@ clear = lambda: os.system('cls')
 
 os.system('')
 new_frame_escape = f'\033[{new_resolution[0] + blank_before}D\033[{new_resolution[1]}A'
-new_line_escape = f'\033[{new_resolution[0] + blank_before}D'
+new_line_escape = f'\033[{new_resolution[0] + blank_before}D\033[1B'
 
 if not cap.isOpened():
     print('ERROR: VIDEO NOT OPENED')
@@ -49,7 +49,6 @@ while cap.isOpened():
     print(to_print)
 
     if ret == True:
-        # cv2.imshow('Bad Apple', frame)
         if keyboard.is_pressed('q'):
             break
     else:
