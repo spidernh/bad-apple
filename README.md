@@ -1,4 +1,4 @@
-# Bad Apple!!\ player
+# Bad Apple!! player
 
 This repository contains multiple programs I have written to play Bad Apple!! other than just playing it on YouTube.
 
