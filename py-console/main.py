@@ -7,7 +7,7 @@ import os
 cap = cv2.VideoCapture('bad-apple.mp4')
 fps = 30
 
-og_resolution = (690, 720)
+og_resolution = (960, 720)
 new_resolution = (76, 29)
 console_resolution = (119, 29)
 blank_before = int((console_resolution[0] - new_resolution[0]) / 2.0)
