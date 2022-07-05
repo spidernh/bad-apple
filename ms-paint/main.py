@@ -89,7 +89,7 @@ wait()
 click_screen(black_position)
 wait()
 # Set starting variables
-start_frame = 456 # To know when to start saving frames (due to antialiasing making stuff weird)
+start_frame = 1724 # To know when to start saving frames (due to antialiasing making stuff weird)
 frame_counter = start_frame-4 # Frame counter to know what frame to render
 color_is_black = True # Starting color
 running = True # Loop variable
@@ -170,9 +170,9 @@ while running:
             break
     unglitch(video_resolution, canvas_position)
     wait()
-    # if frame_counter >= start_frame:
-    #     screenshot = pyautogui.screenshot()
-    #     screenshot.save(f'render-frames/{frame_counter:04}.png')
+    if frame_counter >= start_frame:
+        screenshot = pyautogui.screenshot()
+        screenshot.save(f'render-frames/{frame_counter:04}.png')
     print(f'Finished frame {frame_counter:04} in {time.time() - last_frame_time} seconds.')
     frame_counter += 1
     last_frame_time = time.time()
