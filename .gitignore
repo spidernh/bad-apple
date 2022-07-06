@@ -151,6 +151,7 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# PNGs and MP4s so people can't steal stuff
+# PNGs, MP4s, and MP3s so people can't steal stuff
 *.png
 *.mp4
+*.mp3

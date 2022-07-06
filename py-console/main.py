@@ -3,9 +3,14 @@ import time
 import keyboard
 from math import floor
 import os
+import pygame.mixer
 
 cap = cv2.VideoCapture('bad-apple.mp4')
 fps = 30
+pygame.mixer.init()
+pygame.mixer.music.load('bad-apple.mp3')
+
+os.system('cls')
 
 og_resolution = (960, 720)
 new_resolution = (76, 29)
@@ -23,6 +28,7 @@ if not cap.isOpened():
 
 frame_counter = 0
 start_time = time.time()
+pygame.mixer.music.play()
 while cap.isOpened():
     ret, frame = cap.read()
 
