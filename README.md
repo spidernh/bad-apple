@@ -8,6 +8,8 @@ Plays Bad Apple!! in a terminal using Python.
 
 Uses OpenCV to get the frame from the video, converts that frame into a smaller black & white image that would fit on the terminal, then displays it using either a '#' or a ' ' representing black and white respectively.
 
+[Video](https://youtu.be/dZlLGa9qXyg)
+
 ## MS Paint
 
 Plays Bad Apple!! in MS Paint using Python.
@@ -18,8 +20,12 @@ To render the frame, it goes through every eight rows (to lower the resolution a
 
 Due to a quirk in Paint where parts of a canvas won't update if the mouse doesn't pass over them, we also pass the mouse over every part of the canvas after each frame.
 
+[Video](https://youtu.be/wDVdneDsAUk) (WIP)
+
 ## Minecraft Book
 
 Plays Bad Apple!! in a Minecraft book.
 
 Uses Pillow to read each frame, then goes through the frame and types it into the book using the characters '#' and ' '. It then screenshots and saves it before going to the next page. It will also get new books manually as books have a page cap of 100 pages.
+
+[Video](https://youtu.be/9gVhg2QZRA4)
