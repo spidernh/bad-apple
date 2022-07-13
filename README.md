@@ -28,12 +28,12 @@ Plays Bad Apple!! in a Minecraft book.
 
 Uses Pillow to read each frame, then goes through the frame and types it into the book using the characters '#' and ' '. It then screenshots and saves it before going to the next page. It will also get new books manually as books have a page cap of 100 pages.
 
-[Video](https://youtu.be/9gVhg2QZRA4)
+[Video](https://youtu.be/XBVU8bV-pdY)
 
 ## Minesweeper
 
 Plays Bad Apple!! in Google Minesweeper.
 
-Uses PyAutoGUI to read the board and figure out where flags are, then keeps track of the state of the board and places flags for black, and keeps the tiles empty for white.
+Uses PyAutoGUI to read the board and figure out where flags are, then keeps track of the state of the board. Then uses Pillow to read each frame and places flags for black, and keeps the tiles empty for white. It will then save a screenshot of the frame.
 
 [Video](https://youtu.be/TV_zBIrI8Bg) (WIP, will finish after MS Paint)
