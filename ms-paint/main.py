@@ -5,6 +5,7 @@ import sys
 from PIL import Image
 import numpy
 import pyautogui
+import datetime
 
 def click_screen(x: int, y: int):
     win32api.SetCursorPos((x, y))
@@ -74,9 +75,14 @@ brush_position_2 = (330, 137)
 size_position_1 = (638, 67)
 size_position_2 = (667, 255)
 
-start_frame = 1884 # To know when to start saving frames (due to antialiasing making stuff weird)
+# Set starting variables
+last_frame = 0 # To know when to start saving frames (due to antialiasing making stuff weird, we want to start BEFORE the frames we need to render so it looks continuous)
+frame_counter = 0 # Frame counter to know what frame to render (generally last_frame - 4)
+color_is_black = True # Starting color
+running = True # Loop variable
+last_frame_time = time.time() # To get frame time (generally around a minute)
 
-print(f'Ready to start on frame {start_frame - 4} to render {start_frame} and beyond.')
+print(f'Ready to start on frame {frame_counter} to render {last_frame} and beyond.')
 
 # Wait until P is pressed and un-pressed for the user to switch to Paint before starting.
 while not keyboard.is_pressed('p'):
@@ -95,11 +101,8 @@ click_screen(size_position_2)
 wait_slow()
 click_screen(black_position)
 wait_slow()
-# Set starting variables
-frame_counter = start_frame-4 # Frame counter to know what frame to render
-color_is_black = True # Starting color
-running = True # Loop variable
-last_frame_time = time.time() # To get frame time (generally around a minute)
+
+print(f'Started on frame {frame_counter}')
 while running:
     img = Image.open(f'./frame-sequence/{frame_counter:04}.png')
     frame = numpy.asarray(img)
@@ -176,13 +179,19 @@ while running:
             break
     unglitch(video_resolution, canvas_position)
     wait_slow()
-    if frame_counter >= start_frame:
+    now = datetime.datetime.now()
+    current_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    delta_time = round(time.time() - last_frame_time, 2)
+    if frame_counter >= last_frame:
         screenshot = pyautogui.screenshot()
-        screenshot.save(f'render-frames/{frame_counter:04}.png')
-    print(f'Finished frame {frame_counter:04} in {time.time() - last_frame_time} seconds.')
+        location = f'render-frames/{frame_counter:04}.png'
+        screenshot.save(location)
+        print(f'Saved frame {frame_counter} in {delta_time} seconds at {current_time}')
+    else:
+        print(f"Didn't save frame {frame_counter} in {delta_time} at {current_time}")
     frame_counter += 1
     last_frame_time = time.time()
-print(f'quit on y={y} x={x} black={color_is_black} position={pyautogui.position()} frame={frame_counter}')
+print(f'quit on frame={frame_counter} at {now.strftime("%Y-%m-%d %H:%M:%S")}')
 print('press m to close')
 while not keyboard.is_pressed('m'):
     pass

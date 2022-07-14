@@ -20,7 +20,7 @@ To render the frame, it goes through every eight rows (to lower the resolution a
 
 Due to a quirk in Paint where parts of a canvas won't update if the mouse doesn't pass over them, we also pass the mouse over every part of the canvas after each frame.
 
-[Video](https://youtu.be/jwjmMSMnKBE) (WIP)
+[Video](https://youtu.be/nVDQ0VNUyIg)
 
 ## Minecraft Book
 
