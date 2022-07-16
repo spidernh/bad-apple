@@ -1,11 +1,15 @@
-import time
-import keyboard
-import win32api, win32con
+import os
 import sys
+import time
 from math import floor
-from PIL import Image
+
+import keyboard
 import numpy
 import pyautogui
+import win32api
+import win32con
+from PIL import Image
+
 
 def press_and_release(key: str):
     keyboard.press(key)
@@ -34,6 +38,8 @@ quill_position = (715, 400)
 empty_position = (715, 460)
 slot_1_position = (715, 680)
 
+frame_folder_path = os.getcwd()[:os.getcwd().rfind('\\')] + '\\frame-sequence\\'
+
 while not keyboard.is_pressed('p'):
     time.sleep(0.01)
 while keyboard.is_pressed('p'):
@@ -47,7 +53,7 @@ move_pages(page_number - 1, next_position)
 last_frame_time = time.time()
 running = True
 while running:
-    img = Image.open(f'./frame-sequence/{frame_counter:04}.png')
+    img = Image.open(f'{frame_folder_path}{frame_counter:04}.png')
     frame = numpy.asarray(img)
 
     freq = (video_resolution[0] / output_resolution[0], video_resolution[1] / output_resolution[1])

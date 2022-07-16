@@ -1,11 +1,14 @@
+import datetime
+import os
 import time
+
 import keyboard
-import win32api, win32con
-import sys
-from PIL import Image
 import numpy
 import pyautogui
-import datetime
+import win32api
+import win32con
+from PIL import Image
+
 
 def click_screen(x: int, y: int):
     win32api.SetCursorPos((x, y))
@@ -75,6 +78,8 @@ brush_position_2 = (330, 137)
 size_position_1 = (638, 67)
 size_position_2 = (667, 255)
 
+frame_folder_path = os.getcwd()[:os.getcwd().rfind('\\')] + '\\frame-sequence\\'
+
 # Set starting variables
 last_frame = 0 # To know when to start saving frames (due to antialiasing making stuff weird, we want to start BEFORE the frames we need to render so it looks continuous)
 frame_counter = 0 # Frame counter to know what frame to render (generally last_frame - 4)
@@ -104,7 +109,7 @@ wait_slow()
 
 print(f'Started on frame {frame_counter}')
 while running:
-    img = Image.open(f'./frame-sequence/{frame_counter:04}.png')
+    img = Image.open(f'{frame_folder_path}{frame_counter:04}.png')
     frame = numpy.asarray(img)
     
     # Go through each row and draw it

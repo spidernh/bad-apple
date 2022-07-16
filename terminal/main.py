@@ -1,14 +1,16 @@
-import cv2
-import time
-import keyboard
-from math import floor
 import os
+import time
+from math import floor
+
+import cv2
+import keyboard
 import pygame.mixer
 
-cap = cv2.VideoCapture('bad-apple.mp4')
+file_path = os.getcwd()[:os.getcwd().rfind('\\')] + '\\'
+cap = cv2.VideoCapture(f'{file_path}bad-apple.mp4')
 fps = 30
 pygame.mixer.init()
-pygame.mixer.music.load('bad-apple.mp3')
+pygame.mixer.music.load(f'{file_path}bad-apple.mp3')
 
 os.system('cls')
 

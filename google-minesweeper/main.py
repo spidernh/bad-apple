@@ -1,11 +1,13 @@
-import time
-import keyboard
-import win32api, win32con
 import sys
-from PIL import Image
+import time
+
+import keyboard
 import numpy
 import pyautogui
-from math import floor
+import win32api
+import win32con
+from PIL import Image
+
 
 def click_board(x: int, y: int, left: bool):
 	global region, tile_size
@@ -79,7 +81,7 @@ top_margin = round((dimens[1] - render_resolution[1]) / 2)
 video_resolution = (960, 720)
 board = [[True] * 24 for _ in range(20)]
 tile_size = round(region[3] / dimens[1])
-
+frame_folder_path = os.getcwd()[:os.getcwd().rfind('\\')] + '\\frame-sequence\\'
 
 # Wait until P is pressed and un-pressed for the user to switch to Paint before starting.
 while not keyboard.is_pressed('p'):
@@ -93,7 +95,7 @@ frame_counter = 150
 running = True # Loop variable
 last_frame_time = time.time() # To get frame time (generally around a minute)
 while running:
-	img = Image.open(f'./frame-sequence/{frame_counter:04}.png')
+	img = Image.open(f'{frame_folder_path}{frame_counter:04}.png')
 	frame = numpy.asarray(img)
 
 	prev_board = board
