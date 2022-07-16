@@ -1,6 +1,6 @@
-# MS Paint
+## Microsoft Paint (Raster)
 
-Plays Bad Apple!! in MS Paint using Python.
+Plays Bad Apple!! in Microsoft Paint using Python.
 
 Uses Pillow to grab a PNG of each frame, renders it to Paint, then saves a screenshot. This doesn't use an MP4 as it takes multiple days to render the full video.
 
