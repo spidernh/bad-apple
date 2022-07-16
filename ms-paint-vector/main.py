@@ -110,7 +110,7 @@ def draw_frame(frame: int):
 	global frame_folder_path
 	start_time = time.time()
 	print(f'Proccessing frame {frame}')
-	mat = cv2.imread('test.png', 0)
+	mat = cv2.imread(f'{frame_folder_path}{frame}.png', 0)
 	ret, mat = cv2.threshold(mat, 100, 255, 0)
 	mat = cv2.bitwise_not(mat)
 	if not ret:
