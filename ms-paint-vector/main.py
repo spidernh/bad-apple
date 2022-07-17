@@ -7,11 +7,9 @@ from math import atan2, ceil, cos, sin
 
 import cv2
 import keyboard
-import numpy
 import pyautogui
 import win32api
 import win32con
-from PIL import Image
 
 from constants import constants
 
@@ -24,6 +22,25 @@ def unclick():
 def click():
 	win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
 
+def resize_bigger():
+	time.sleep(0.2)
+	move(constants.canvas_position[0] + constants.video_resolution[0], constants.canvas_position[1] + constants.video_resolution[1])
+	click()
+	time.sleep(0.2)
+	move(constants.canvas_position[0] + constants.video_resolution[0] + 30, constants.canvas_position[1] + constants.video_resolution[1] + 30)
+	time.sleep(0.2)
+	unclick()
+	time.sleep(0.2)
+
+def resize_smaller():
+	time.sleep(0.2)
+	move(constants.canvas_position[0] + constants.video_resolution[0] + 30, constants.canvas_position[1] + constants.video_resolution[1] + 30)
+	click()
+	time.sleep(0.2)
+	move(constants.canvas_position[0] + constants.video_resolution[0], constants.canvas_position[1] + constants.video_resolution[1])
+	time.sleep(0.2)
+	unclick()
+	time.sleep(0.2)
 
 def save_frame(frame: int, log=True):
 	screenshot = pyautogui.screenshot()
@@ -106,11 +123,30 @@ def nested_contour(contour: list, contours: list):
 		if cont.tolist() != contour and point_in_contour(point, cont.tolist()): count += 1
 	return count
 
+def new_file():
+	time.sleep(0.2)
+	move(constants.file_position[0], constants.file_position[1])
+	click()
+	time.sleep(0.2)
+	unclick()
+	time.sleep(0.2)
+	move(constants.new_position[0], constants.new_position[1])
+	click()
+	time.sleep(0.2)
+	unclick()
+	time.sleep(0.2)
+	move(constants.no_save_position[0], constants.no_save_position[1])
+	click()
+	time.sleep(0.2)
+	unclick()
+	time.sleep(0.2)
+
 def draw_frame(frame: int):
 	global frame_folder_path
 	start_time = time.time()
+
 	print(f'Proccessing frame {frame}')
-	mat = cv2.imread(f'{frame_folder_path}{frame}.png', 0)
+	mat = cv2.imread(f'{frame_folder_path}{frame:04}.png', 0)
 	ret, mat = cv2.threshold(mat, 100, 255, 0)
 	mat = cv2.bitwise_not(mat)
 	if not ret:
@@ -119,9 +155,15 @@ def draw_frame(frame: int):
 	contours, hierarchy = cv2.findContours(mat, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
 	# Debug here
+	# print(len(contours))
+	# print(f'zero = {contours[0].tolist()}')
+	# print(f'one = {contours[1].tolist()}')
+	# return
 
 	print(f'Drawing frame {frame}')
 	
+	new_file()
+	resize_bigger()
 	# Change to pencil tool
 	move(constants.pencil_position[0], constants.pencil_position[1])
 	click()
@@ -164,8 +206,13 @@ def draw_frame(frame: int):
 		else:
 			as_list = contour.tolist()
 		fill_point = find_fill_point(as_list)
-		
 		if fill_point == None: continue
+		fill_x, fill_y = fill_point[0], fill_point[1]
+		fill_x = min(max(fill_x, 1), constants.video_resolution[0] - 1)
+		fill_y = min(max(fill_y, 1), constants.video_resolution[1] - 1)
+		fill_point = (fill_x, fill_y)
+
+		print(f'fill point for len {len(contour.tolist())}: {fill_point}')
 
 		# Fill
 		count = nested_contour(as_list, contours)
@@ -175,8 +222,9 @@ def draw_frame(frame: int):
 			click()
 			time.sleep(constants.sleep_time)
 			unclick()
-	move(constants.canvas_position[0] + constants.video_resolution[0] + 20, constants.canvas_position[1] + constants.video_resolution[1] + 20)
-	save_frame(frame, log=False)
+	resize_smaller()
+	move(constants.canvas_position[0] + constants.video_resolution[0] + 30, constants.canvas_position[1] + constants.video_resolution[1] + 30)
+	# save_frame(frame, log=False)
 	print(f'Finished frame {frame} in {round(time.time() - start_time, 2)} seconds at {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}.')
 
 frame_folder_path = os.getcwd()[:os.getcwd().rfind('\\')] + '\\frame-sequence\\'
@@ -187,6 +235,8 @@ while not keyboard.is_pressed('p'):
 while keyboard.is_pressed('p'):
 	if keyboard.is_pressed('q'): sys.exit()
 
-frame = 0
+frame = 100
 while not keyboard.is_pressed('q'):
 	draw_frame(frame)
+	frame += 1
+# draw_frame(103)
