@@ -7,7 +7,7 @@ class constants:
 	fill_position = (270, 70)
 	pencil_position = (245, 70)
 
-	brush_size_offset = 2
+	brush_size_offset = 1.5
 	
 	sleep_time = 0.01
 

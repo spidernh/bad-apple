@@ -3,7 +3,7 @@ import math
 import os
 import sys
 import time
-from math import atan2, ceil, cos, sin
+from math import atan2, ceil, cos, sin, sqrt
 
 import cv2
 import keyboard
@@ -83,6 +83,47 @@ def point_in_contour(point: tuple, contour: list):
 			intersect_counter += 1
 	return intersect_counter % 2 != 0
 
+def point_seg_dist(point: tuple, p1: tuple, p2: tuple):
+	if p1[0] == p2[0]: # Vertical line, infinite slope
+		hoz_dist = abs(point[0] - p2[0])
+		vert_dist = min(abs(p1[1] - point[1]), abs(p2[1] - point[1]))
+		return sqrt(hoz_dist**2 + vert_dist**2)
+	elif p1[1] == p2[1]: # Horizontal line, zero slope
+		vert_dist = abs(point[1] - p2[1])
+		hoz_dist = min(abs(p1[0] - point[0]), abs(p2[0] - point[0]))
+		return sqrt(hoz_dist**2 + vert_dist**2)
+	else:
+		m_0 = (p2[1] - p1[1]) / (p2[0] - p1[0])
+		b_0 = p1[1] - m_0 * p1[0]
+		m_1 = -1 / m_0
+		b_1 = point[1] - m_1 * point[0]
+		intersect_x = (b_1 - b_0) / (m_0 - m_1)
+		intersect_y = m_0 * intersect_x + b_0
+		perp_dist = sqrt((point[0] - intersect_x)**2 + (point[1] - intersect_y)**2)
+		check_1 = (p1[0] + 1, p1[1] + m_1)
+		check_2 = (p2[0] + 1, p2[1] + m_1)
+		o_1 = orientation(p1, check_1, point)
+		o_2 = orientation(p2, check_2, point)
+		if o_1 != o_2 or o_1 == 0 or o_2 == 0:
+			# print(f'returning perp dist')
+			return perp_dist
+		par_dist = min(sqrt((intersect_x - p1[0])**2 + (intersect_y - p1[1])**2), sqrt((intersect_x - p2[0])**2 + (intersect_y - p2[1])**2))
+		# par_dist = 0
+		return sqrt(par_dist**2 + perp_dist**2)
+
+def point_poly_dist(point: tuple, contour: list):
+	min_dist = 100000
+	smallest_index = 0
+	for i in range(len(contour)):
+		pt1 = contour[i][0]
+		pt2 = contour[(i + 1) % len(contour)][0]
+		dist = point_seg_dist(point, pt1, pt2)
+		min_dist = min(min_dist, dist)
+		if min_dist == dist: smallest_index = i
+		# print(f'dist {dist}, min {min_dist}')
+	# print(smallest_index)
+	return min_dist
+
 def find_fill_point(contour: list):
 	if len(contour) < 3: return None
 	perp_add = None
@@ -102,6 +143,7 @@ def find_fill_point(contour: list):
 	else:
 		perp_add = -math.pi / 2 # CW
 
+	final_point = None
 	for i in range(len(contour)):
 		# Do meth
 		pt1 = contour[i][0]
@@ -113,8 +155,13 @@ def find_fill_point(contour: list):
 		midpoint = ((pt1[0] + pt2[0]) / 2, (pt1[1] + pt2[1]) / 2)
 		check_point = (round(midpoint[0] + x_off), round(midpoint[1] + y_off))
 		point_in_outline = point_in_contour(check_point, contour)
-		if point_in_outline: return check_point
-	return None
+		if point_in_outline:
+			dist = point_poly_dist(check_point, contour)
+			# print(f'dist {i} {len(contour)}: {dist}')
+			if dist > constants.brush_size_offset: final_point = check_point; break
+	if final_point != None:
+		print(f'dist {len(contour)}: {point_poly_dist(final_point, contour)} pixels')
+	return final_point
 
 def nested_contour(contour: list, contours: list):
 	point = tuple(contour[0][0])
@@ -235,8 +282,8 @@ while not keyboard.is_pressed('p'):
 while keyboard.is_pressed('p'):
 	if keyboard.is_pressed('q'): sys.exit()
 
-frame = 100
-while not keyboard.is_pressed('q'):
-	draw_frame(frame)
-	frame += 1
-# draw_frame(103)
+# frame = 1387
+# while not keyboard.is_pressed('q'):
+# 	draw_frame(frame)
+	# frame += 1
+draw_frame(1388)
