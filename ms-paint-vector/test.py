@@ -130,10 +130,51 @@ def point_poly_dist(point: tuple, contour: list):
 	# print(smallest_index)
 	return min_dist
 
-zero = [[[563, 481]], [[563, 485]], [[562, 486]], [[562, 491]], [[561, 492]], [[561, 498]], [[560, 499]], [[560, 507]], [[559, 508]], [[559, 515]], [[560, 515]], [[561, 516]], [[562, 515]], [[563, 515]], [[565, 513]], [[565, 512]], [[567, 510]], [[567, 509]], [[568, 508]], [[569, 508]], [[570, 507]], [[571, 507]], [[573, 505]], [[574, 505]], [[574, 504]], [[576, 502]], [[576, 500]], [[577, 499]], 
-[[577, 497]], [[578, 496]], [[578, 494]], [[566, 482]], [[565, 482]], [[564, 481]]]
-point = (566, 483)
-p1 = (566, 482)
-p2 = (565, 482)
-print(f'dist: {point_poly_dist(point, zero)}')
-print(f'dist: {point_seg_dist(point, p1, p2)}')
+def find_fill_point(contour: list):
+	if len(contour) < 3: return None
+	perp_add = None
+	wind = 0
+	for i in range(len(contour)):
+		pt1 = tuple(contour[i][0])
+		pt2 = tuple(contour[(i + 1) % len(contour)][0])
+		pt3 = tuple(contour[(i + 3) % len(contour)][0])
+		delta1 = (pt2[0] - pt1[0], -pt2[1] + pt1[1])
+		delta2 = (pt3[0] - pt2[0], -pt3[1] + pt2[1])
+		ang1 = atan2(delta1[1], delta1[0])
+		ang2 = atan2(delta2[1], delta2[0])
+		delta_ang = (ang2 - ang1) % (2 * math.pi)
+		wind += delta_ang
+	if wind > 0:
+		perp_add = math.pi / 2  # CCW
+	else:
+		perp_add = -math.pi / 2 # CW
+
+	final_point = None
+	for i in range(len(contour)):
+		# Do meth
+		pt1 = contour[i][0]
+		pt2 = contour[(i + 1) % len(contour)][0]
+		ang = atan2(-(pt2[1] - pt1[1]), pt2[0] - pt1[0])
+		perp_ang = ang + perp_add
+		x_off = constants.brush_size_offset * cos(perp_ang)
+		y_off = -constants.brush_size_offset * sin(perp_ang)
+		midpoint = ((pt1[0] + pt2[0]) / 2, (pt1[1] + pt2[1]) / 2)
+		check_point = (round(midpoint[0] + x_off), round(midpoint[1] + y_off))
+		# if i == 3:
+		# 	return check_point
+		point_in_outline = point_in_contour(check_point, contour)
+		if point_in_outline:
+			dist = point_poly_dist(check_point, contour)
+			# print(f'dist {i} {len(contour)}: {dist}')
+			if dist >= sqrt(2): final_point = check_point; break
+	# if final_point != None:
+		# print(f'dist {len(contour)}: {point_poly_dist(final_point, contour)} pixels')
+	return final_point
+
+two = [[[493, 347]], [[492, 348]], [[492, 349]], [[489, 352]], [[489, 353]], [[490, 354]], [[491, 354]], [[492, 353]], [[493, 353]], [[493, 352]], [[494, 351]], [[494, 349]], [[493, 348]]]
+point = find_fill_point(two)
+p1 = tuple(two[0][0])
+p2 = tuple(two[1][0])
+print(point)
+print(f'dist: {point_poly_dist(point, two)}')
+# print(f'dist: {point_seg_dist(point, p1, p2)}')

@@ -150,17 +150,19 @@ def find_fill_point(contour: list):
 		pt2 = contour[(i + 1) % len(contour)][0]
 		ang = atan2(-(pt2[1] - pt1[1]), pt2[0] - pt1[0])
 		perp_ang = ang + perp_add
-		x_off = ceil(constants.brush_size_offset) * cos(perp_ang)
-		y_off = -ceil(constants.brush_size_offset) * sin(perp_ang)
+		x_off = constants.brush_size_offset * cos(perp_ang)
+		y_off = -constants.brush_size_offset * sin(perp_ang)
 		midpoint = ((pt1[0] + pt2[0]) / 2, (pt1[1] + pt2[1]) / 2)
 		check_point = (round(midpoint[0] + x_off), round(midpoint[1] + y_off))
+		# if i == 3:
+		# 	return check_point
 		point_in_outline = point_in_contour(check_point, contour)
 		if point_in_outline:
 			dist = point_poly_dist(check_point, contour)
 			# print(f'dist {i} {len(contour)}: {dist}')
-			if dist > constants.brush_size_offset: final_point = check_point; break
-	if final_point != None:
-		print(f'dist {len(contour)}: {point_poly_dist(final_point, contour)} pixels')
+			if dist >= sqrt(2): final_point = check_point; break
+	# if final_point != None:
+		# print(f'dist {len(contour)}: {point_poly_dist(final_point, contour)} pixels')
 	return final_point
 
 def nested_contour(contour: list, contours: list):
@@ -203,7 +205,7 @@ def draw_frame(frame: int):
 
 	# Debug here
 	# print(len(contours))
-	# print(f'zero = {contours[0].tolist()}')
+	# print(f'two = {contours[2].tolist()}')
 	# print(f'one = {contours[1].tolist()}')
 	# return
 
